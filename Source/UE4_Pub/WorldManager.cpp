@@ -31,7 +31,7 @@ void AWorldManager::AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVec
 	// First spawn in the new furnishing
 	FActorSpawnParameters ActorSpawnParams;
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	GetWorld()->SpawnActor<class AFurnishingParent>(NewFurnishing.Class, NewLocation, FRotator(), ActorSpawnParams);
+	AFurnishingParent* NewObj = GetWorld()->SpawnActor<class AFurnishingParent>(NewFurnishing.Class, NewLocation, FRotator(), ActorSpawnParams);
 
 	// Next, set all properties in the defined struct
 	AddFurnishing.Name = NewFurnishing.Name;
@@ -41,9 +41,10 @@ void AWorldManager::AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVec
 	AddFurnishing.Rotation = FRotator();
 	AddFurnishing.SellAmount = NewFurnishing.Price * SellPercent;
 
-	// Then add it to the world array
+	// Then add it to the world array and update the new furnishings data
 	FurnishingsInWorld.Add(AddFurnishing);
 	BuyItem(NewFurnishing.Price);
+	NewObj->SetFurnishing(AddFurnishing);
 
 	// Deselect the item from the player if they have run out of money
 	if (CanAffordPurchase(NewFurnishing.Price) == false)
