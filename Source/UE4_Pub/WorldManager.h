@@ -23,7 +23,7 @@ public:
 
 	// Add a new placed furnishing to the world
 	UFUNCTION(BlueprintCallable)
-		void AddFurnishingToWorld(FFurnishingWorldData NewFurnishing);
+		void AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation);
 
 	UFUNCTION(BlueprintCallable)
 		bool CanAffordPurchase(float AmountRequired);
@@ -39,7 +39,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Data")
 		TArray<FFurnishingWorldData> FurnishingsInWorld;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Data")
+		FFurnishingWorldData AddFurnishing;
+
 	// How much money the player currently has
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Managers")
-		int CurrentMoney;
+		float CurrentMoney = 1000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Managers")
+		float SellPercent = .8;
+
+	class APlayerCharacter* PlayerRef;
 };

@@ -51,8 +51,9 @@ void APlayerCharacter::BeginPlay()
 	}
 	else
 	{
-		// Set the pointer to the ship interior
+		// Set the pointer to the world manager
 		WM = Cast<AWorldManager>(FoundActors[0]);
+		WM->PlayerRef = this;
 	}
 }
 
@@ -67,7 +68,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		// Get Mouse Location in world space
 		PC->DeprojectMousePositionToWorld(MouseWorldLocation, MouseWorldDirection);
 		// Find distance between mouse world pos and closest floor or placeable object  (TO:DO - Remove ability to trace to the placer helper object itself, this will stop it rising)
-		bool PlacementTrace = GetWorld()->LineTraceSingleByChannel(TraceHit, MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * 2000), TraceChannel, FCollisionQueryParams(FName("DistTrace"), true));
+		bool PlacementTrace = GetWorld()->LineTraceSingleByChannel(TraceHit, MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * PlacementDistance), TraceChannel, FCollisionQueryParams(FName("DistTrace"), true));
 		//DrawDebugLine(GetWorld(), MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * 2000), FColor::Green, false, 1.f, ECC_WorldStatic, 0.5f);
 
 		// Place the furnishing placer object where it is in the world space based on the mouse the distance away (rewrite comment)
@@ -86,21 +87,44 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveY", this, &APlayerCharacter::MoveY);
 	PlayerInputComponent->BindAxis("RotateX", this, &APlayerCharacter::RotateX);
 	PlayerInputComponent->BindAxis("Zoom", this, &APlayerCharacter::Zoom);
+
+	PlayerInputComponent->BindAction("CancelSelection", IE_Released, this, &APlayerCharacter::DeselectFurnishing);
+	PlayerInputComponent->BindAction("PlaceFurnishing", IE_Released, this, &APlayerCharacter::CreateFurnishing);
 }
 
-void APlayerCharacter::SelectFurnishing(UStaticMesh* NewSelectedItem)
+void APlayerCharacter::SelectFurnishing(FFurnishingMenuData NewSelectedItem)
 {
-	bFurnishingSelected = true; FurnishingToPlace = NewSelectedItem;
-	FurnishingPlacer->SetStaticMesh(NewSelectedItem);
-	// Set the new static meshes actual material to the CanPlaceFurnishing Material from the MaterialInterface
-	CanPlaceMaterial = FurnishingToPlace->GetMaterial(0)->GetMaterial();
+	if (FurnishingPlacer->GetStaticMesh() == nullptr || FurnishingPlacer->GetStaticMesh() != NewSelectedItem.Mesh)
+	{
+		bFurnishingSelected = true; FurnishingToPlace = NewSelectedItem;
+		FurnishingPlacer->SetStaticMesh(NewSelectedItem.Mesh);
+		// Set the new static meshes actual material to the CanPlaceFurnishing Material from the MaterialInterface
+		CanPlaceMaterial = FurnishingToPlace.Mesh->GetMaterial(0)->GetMaterial();
+	}
+	else
+	{
+		DeselectFurnishing();
+	}
 }
+
 
 void APlayerCharacter::DeselectFurnishing()
 {
-	bFurnishingSelected = false; FurnishingToPlace = nullptr;
+	bFurnishingSelected = false; FurnishingToPlace = {};
 	FurnishingPlacer->SetStaticMesh(nullptr);
 	CanPlaceMaterial = nullptr;
+}
+
+void APlayerCharacter::CreateFurnishing()
+{
+	if (FurnishingPlacer->GetStaticMesh() != nullptr && HoveringButton == false)
+	{
+		if (WM->CanAffordPurchase(FurnishingToPlace.Price) == true)
+		{
+			WM->AddFurnishingToWorld(FurnishingToPlace, TraceHit.Location);
+		}
+	}
+
 }
 
 bool APlayerCharacter::HasResourcesForFurnishing(float AmountRequired)

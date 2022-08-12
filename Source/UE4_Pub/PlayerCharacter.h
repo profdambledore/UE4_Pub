@@ -10,6 +10,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/Material.h"
+#include "StructEnumLibrary.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -32,10 +33,13 @@ public:
 
 	// Furnishing Functions
 	UFUNCTION(BlueprintCallable)
-		void SelectFurnishing(UStaticMesh* NewSelectedItem);
+		void SelectFurnishing(FFurnishingMenuData NewSelectedItem);
 
 	UFUNCTION(BlueprintCallable)
 		void DeselectFurnishing();
+
+	UFUNCTION(BlueprintCallable)
+		void CreateFurnishing();
 
 	UFUNCTION(BlueprintCallable)
 		bool HasResourcesForFurnishing(float AmountRequired);
@@ -98,7 +102,13 @@ public:
 		bool bFurnishingSelected = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
-		UStaticMesh* FurnishingToPlace;
+		float PlacementDistance = 2000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
+		bool HoveringButton = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
+		FFurnishingMenuData FurnishingToPlace;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
 		UMaterial* CanPlaceMaterial;

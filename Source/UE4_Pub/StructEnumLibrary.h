@@ -7,6 +7,7 @@
 
 #include "Engine/DataTable.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 
 #include "StructEnumLibrary.generated.h"
 
@@ -33,8 +34,23 @@ struct FFurnishingMenuData : public FTableRowBase
 	GENERATED_USTRUCT_BODY();
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString Name;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString Description;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UTexture2D* Icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMesh* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf <class AFurnishingParent> Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Price;
 };
 
 USTRUCT(BlueprintType)
@@ -57,4 +73,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FRotator Rotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SellAmount;
 };

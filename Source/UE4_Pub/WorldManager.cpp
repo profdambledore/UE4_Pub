@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "FurnishingParent.h"
+#include "PlayerCharacter.h"
 #include "WorldManager.h"
 
 // Sets default values
@@ -25,9 +26,30 @@ void AWorldManager::Tick(float DeltaTime)
 
 }
 
-void AWorldManager::AddFurnishingToWorld(FFurnishingWorldData NewFurnishing)
+void AWorldManager::AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation)
 {
+	// First spawn in the new furnishing
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+	GetWorld()->SpawnActor<class AFurnishingParent>(NewFurnishing.Class, NewLocation, FRotator(), ActorSpawnParams);
 
+	// Next, set all properties in the defined struct
+	AddFurnishing.Name = NewFurnishing.Name;
+	AddFurnishing.Mesh = NewFurnishing.Mesh;
+	AddFurnishing.Class = NewFurnishing.Class;
+	AddFurnishing.Location = NewLocation;
+	AddFurnishing.Rotation = FRotator();
+	AddFurnishing.SellAmount = NewFurnishing.Price * SellPercent;
+
+	// Then add it to the world array
+	FurnishingsInWorld.Add(AddFurnishing);
+	BuyItem(NewFurnishing.Price);
+
+	// Deselect the item from the player if they have run out of money
+	if (CanAffordPurchase(NewFurnishing.Price) == false)
+	{
+		PlayerRef->DeselectFurnishing();
+	}
 }
 
 bool AWorldManager::CanAffordPurchase(float AmountRequired)
