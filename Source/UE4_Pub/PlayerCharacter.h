@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/Material.h"
 #include "StructEnumLibrary.h"
@@ -39,10 +40,13 @@ public:
 		void DeselectFurnishing();
 
 	UFUNCTION(BlueprintCallable)
-		void CreateFurnishing();
+		void Interact();
 
 	UFUNCTION(BlueprintCallable)
 		bool HasResourcesForFurnishing(float AmountRequired);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void SwapUIIndex(int NewIndex);
 
 
 protected:
@@ -102,7 +106,7 @@ public:
 		bool bFurnishingSelected = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
-		float PlacementDistance = 2000;
+		float PlacementDistance = 3000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Placement Properties")
 		bool HoveringButton = false;
@@ -120,7 +124,7 @@ public:
 	// As we are tracing in tick, we define the trace properties here to reduce memory usage
 	// Generate information for the trace
 	FHitResult TraceHit = FHitResult(ForceInit);
-	ECollisionChannel TraceChannel = ECC_GameTraceChannel2;
+	ECollisionChannel TraceChannel = ECC_GameTraceChannel1;
 
 	//float DistanceToFloor;
 };

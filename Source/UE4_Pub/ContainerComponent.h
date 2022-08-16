@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
+#include "StructEnumLibrary.h"
+
 #include "ContainerComponent.generated.h"
 
 
@@ -16,13 +19,30 @@ public:
 	// Sets default values for this component's properties
 	UContainerComponent();
 
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable)
+		void AddToInventory(FContainerItem ItemToAdd, int Amount);
+
+	UFUNCTION(BlueprintCallable)
+		bool RemoveFromInventory(FContainerItem ItemToRemove, int Amount);
+
+	UFUNCTION(BlueprintCallable)
+		bool CheckInInventory(FContainerItem ItemToFind, int Amount);
+
+	UFUNCTION(BlueprintCallable)
+		int FindIndexOfItem(FContainerItem ItemToFind);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FContainerSlot> ContainerInventory;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FContainerSlot ModifyStruct;
 		
 };

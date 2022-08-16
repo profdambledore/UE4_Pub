@@ -3,23 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FurnishingParent.h"
+#include "GameFramework/Actor.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "ContainerComponent.h"
-
 #include "StructEnumLibrary.h"
 
-#include "Bar.generated.h"
+#include "ItemParent.generated.h"
 
 UCLASS()
-class UE4_PUB_API ABar : public AFurnishingParent
+class UE4_PUB_API AItemParent : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ABar();
+	AItemParent();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,15 +27,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-
-	// Components
+	// COMPONENTS
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* CaravanMesh;
+		USceneComponent* Root;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* BarMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		class UContainerComponent* Inventory;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UStaticMeshComponent* Mesh;
 };

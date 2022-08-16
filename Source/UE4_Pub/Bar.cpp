@@ -4,17 +4,21 @@
 #include "Bar.h"
 
 // Sets default values
-ABar::ABar()
+ABar::ABar() : Super()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Setup the components
 	CaravanMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Caravan Mesh"));
+	CaravanMesh->SetCollisionProfileName("Furnishing");
 
 	BarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bar Mesh"));
 	BarMesh->SetRelativeLocation(FVector(-80.0f,0.0f,50.0f));
 	BarMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	BarMesh->SetCollisionProfileName("Furnishing");
+
+	Inventory = CreateDefaultSubobject<UContainerComponent>(TEXT("Inventory"));
 
 	// Find and set the two meshes
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>CaravanObject(TEXT("/Game/PolygonShops/Meshes/Vehicles/SM_Veh_Food_Trailer_02_Preset.SM_Veh_Food_Trailer_02_Preset"));

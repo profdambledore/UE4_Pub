@@ -32,3 +32,68 @@ void UContainerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
+void UContainerComponent::AddToInventory(FContainerItem ItemToAdd, int Amount)
+{
+	if (CheckInInventory(ItemToAdd, Amount) == false)
+	{
+		// Add
+		ModifyStruct.Item = ItemToAdd;
+		ModifyStruct.Amount = Amount;
+
+		ContainerInventory.Add(ModifyStruct);
+	}
+	else
+	{
+		// Find Index
+		int j = FindIndexOfItem(ItemToAdd);
+		ContainerInventory[j].Amount = ContainerInventory[j].Amount + Amount;
+	}
+}
+
+bool UContainerComponent::RemoveFromInventory(FContainerItem ItemToRemove, int Amount)
+{
+	if (CheckInInventory(ItemToRemove, Amount) == true)
+	{
+		// Find Index
+		int j = FindIndexOfItem(ItemToRemove);
+		ContainerInventory[j].Amount = ContainerInventory[j].Amount - Amount;
+		return true;
+	}
+	return false;
+
+}
+
+bool UContainerComponent::CheckInInventory(FContainerItem ItemToFind, int Amount)
+{
+	if (ContainerInventory.Num() != 0)
+	{
+		for (int i = 0; i <= ContainerInventory.Num(); i++)
+		{
+			if (ContainerInventory[i].Item.Name == ItemToFind.Name && ContainerInventory[i].Amount >= Amount)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+int UContainerComponent::FindIndexOfItem(FContainerItem ItemToFind)
+{
+	if (ContainerInventory.Num() != 0)
+	{
+		for (int i = 0; i <= ContainerInventory.Num(); i++)
+		{
+			if (ContainerInventory[i].Item.Name == ItemToFind.Name)
+			{
+				return i;
+			}
+		}
+	}
+	return -0;
+}
+

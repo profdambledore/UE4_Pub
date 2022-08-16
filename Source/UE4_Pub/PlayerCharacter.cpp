@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DrawDebugHelpers.h"
+#include "FurnishingParent.h"
 #include "WorldManager.h"
 #include "PlayerCharacter.h"
 
@@ -12,11 +13,15 @@ APlayerCharacter::APlayerCharacter()
 
 	bUseControllerRotationYaw = false;
 
+	// Set Gravity scale to 0 on this character
+	GetCharacterMovement()->GravityScale = 0;
+
 	// Setup Camera and Sprint Arm
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetRelativeRotation(FRotator(-40.0f, 0.0f, 0.0f));
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->TargetArmLength = MinZoomValue + ((MaxZoomValue - MinZoomValue) / 2);
+	SpringArm->bDoCollisionTest = false;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
@@ -67,7 +72,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		// Get Mouse Location in world space
 		PC->DeprojectMousePositionToWorld(MouseWorldLocation, MouseWorldDirection);
-		// Find distance between mouse world pos and closest floor or placeable object  (TO:DO - Remove ability to trace to the placer helper object itself, this will stop it rising)
+		// Find distance between mouse world pos and closest floor or placeable object
 		bool PlacementTrace = GetWorld()->LineTraceSingleByChannel(TraceHit, MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * PlacementDistance), TraceChannel, FCollisionQueryParams(FName("DistTrace"), true));
 		//DrawDebugLine(GetWorld(), MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * 2000), FColor::Green, false, 1.f, ECC_WorldStatic, 0.5f);
 
@@ -89,7 +94,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Zoom", this, &APlayerCharacter::Zoom);
 
 	PlayerInputComponent->BindAction("CancelSelection", IE_Released, this, &APlayerCharacter::DeselectFurnishing);
-	PlayerInputComponent->BindAction("PlaceFurnishing", IE_Released, this, &APlayerCharacter::CreateFurnishing);
+	PlayerInputComponent->BindAction("PlaceFurnishing", IE_Released, this, &APlayerCharacter::Interact);
 }
 
 void APlayerCharacter::SelectFurnishing(FFurnishingMenuData NewSelectedItem)
@@ -115,7 +120,7 @@ void APlayerCharacter::DeselectFurnishing()
 	CanPlaceMaterial = nullptr;
 }
 
-void APlayerCharacter::CreateFurnishing()
+void APlayerCharacter::Interact()
 {
 	if (FurnishingPlacer->GetStaticMesh() != nullptr && HoveringButton == false)
 	{
@@ -124,7 +129,20 @@ void APlayerCharacter::CreateFurnishing()
 			WM->AddFurnishingToWorld(FurnishingToPlace, TraceHit.Location);
 		}
 	}
+	else if (FurnishingPlacer->GetStaticMesh() == nullptr && HoveringButton == false)
+	{
+		// Get Mouse Location in world space
+		PC->DeprojectMousePositionToWorld(MouseWorldLocation, MouseWorldDirection);
+		// Find distance between mouse world pos and closest floor or placeable object
+		bool InteractTrace = GetWorld()->LineTraceSingleByChannel(TraceHit, MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * PlacementDistance), ECC_GameTraceChannel2, FCollisionQueryParams(FName("DistTrace"), true));
+		DrawDebugLine(GetWorld(), MouseWorldLocation, MouseWorldLocation + (MouseWorldDirection * 2000), FColor::Green, false, 1.f, ECC_GameTraceChannel2, 0.5f);
 
+		if (TraceHit.GetActor()->GetClass()->IsChildOf<AFurnishingParent>() == true)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit"));
+			SwapUIIndex(1);
+		}
+	}
 }
 
 bool APlayerCharacter::HasResourcesForFurnishing(float AmountRequired)

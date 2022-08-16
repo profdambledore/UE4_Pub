@@ -19,13 +19,38 @@ class UE4_PUB_API UStructEnumLibrary : public UBlueprintFunctionLibrary
 };
 
 USTRUCT(BlueprintType)
-struct FContainerItem
+struct FContainerItem : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY();
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString Name;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString Description;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UTexture2D* Icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMesh* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf <class AItemParent> Class;
+};
+
+USTRUCT(BlueprintType)
+struct FContainerSlot
+{
+	GENERATED_USTRUCT_BODY();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FContainerItem Item;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Amount;
 };
 
 USTRUCT(BlueprintType)
