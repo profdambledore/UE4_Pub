@@ -26,12 +26,12 @@ void AWorldManager::Tick(float DeltaTime)
 
 }
 
-void AWorldManager::AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation)
+void AWorldManager::AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation, FRotator NewRotation)
 {
 	// First spawn in the new furnishing
 	FActorSpawnParameters ActorSpawnParams;
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	AFurnishingParent* NewObj = GetWorld()->SpawnActor<class AFurnishingParent>(NewFurnishing.Class, NewLocation, FRotator(), ActorSpawnParams);
+	AFurnishingParent* NewObj = GetWorld()->SpawnActor<class AFurnishingParent>(NewFurnishing.Class, NewLocation, NewRotation, ActorSpawnParams);
 
 	// Next, set all properties in the defined struct
 	AddFurnishing.Name = NewFurnishing.Name;

@@ -23,7 +23,7 @@ public:
 
 	// Add a new placed furnishing to the world
 	UFUNCTION(BlueprintCallable)
-		void AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation);
+		void AddFurnishingToWorld(FFurnishingMenuData NewFurnishing, FVector NewLocation, FRotator NewRotation);
 
 	UFUNCTION(BlueprintCallable)
 		bool CanAffordPurchase(float AmountRequired);

@@ -126,7 +126,7 @@ void APlayerCharacter::Interact()
 	{
 		if (WM->CanAffordPurchase(FurnishingToPlace.Price) == true)
 		{
-			WM->AddFurnishingToWorld(FurnishingToPlace, TraceHit.Location);
+			WM->AddFurnishingToWorld(FurnishingToPlace, TraceHit.Location, GetActorRotation());
 		}
 	}
 	else if (FurnishingPlacer->GetStaticMesh() == nullptr && HoveringButton == false)
