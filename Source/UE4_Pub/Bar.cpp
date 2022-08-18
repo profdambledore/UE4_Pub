@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "GameFramework/Pawn.h"
 #include "Bar.h"
 
 // Sets default values
@@ -17,6 +17,8 @@ ABar::ABar() : Super()
 	BarMesh->SetRelativeLocation(FVector(-80.0f,0.0f,50.0f));
 	BarMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	BarMesh->SetCollisionProfileName("Furnishing");
+
+	CustomerFindLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Customer Order Location"));
 
 	Inventory = CreateDefaultSubobject<UContainerComponent>(TEXT("Inventory"));
 

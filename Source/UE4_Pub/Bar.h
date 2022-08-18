@@ -38,6 +38,14 @@ public:
 		UStaticMeshComponent* BarMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		USceneComponent* CustomerFindLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		class UContainerComponent* Inventory;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Order")
+		bool bManned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class APawn* MannedBy;
 };
