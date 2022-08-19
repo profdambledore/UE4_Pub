@@ -38,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf <class AItemParent> Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Amount;
 };
 
 USTRUCT(BlueprintType)
