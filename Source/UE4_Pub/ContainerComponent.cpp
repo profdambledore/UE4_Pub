@@ -65,19 +65,19 @@ bool UContainerComponent::RemoveFromInventory(FContainerItem ItemToRemove, int A
 
 bool UContainerComponent::CheckInInventory(FContainerItem ItemToFind, int Amount)
 {
+	bool bFound = false;
 	if (ContainerInventory.Num() != 0)
 	{
-		for (int i = 0; i <= ContainerInventory.Num(); i++)
+		//if (GEngine)
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%i"), ContainerInventory.Num()));
+		for (int i = 0; i <= (ContainerInventory.Num() - 1); i++)
 		{
-			if (ContainerInventory[i].Item.Name == ItemToFind.Name && ContainerInventory[i].Amount >= Amount)
+			if (ContainerInventory[i].Item.Name == ItemToFind.Name)
 			{
-				return true;
-			}
-			else
-			{
-				return false;
+				bFound = true;
 			}
 		}
+		return bFound;
 	}
 	return false;
 }
